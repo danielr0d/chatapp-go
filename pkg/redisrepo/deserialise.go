@@ -54,13 +54,13 @@ func DeserialiseChat(docs []Document) []model.Chat {
 }
 
 func DeserialiseContactList(contacts []redis.Z) []model.ContactList {
-	contatList := make([]model.ContactList, 0, len(contacts))
+	contactList := make([]model.ContactList, 0, len(contacts))
 
 	for _, contact := range contacts {
-		contatList = append(contatList, model.ContactList{
+		contactList = append(contactList, model.ContactList{
 			Username:     contact.Member.(string),
 			LastActivity: int64(contact.Score),
 		})
 	}
-	return contatList
+	return contactList
 }
