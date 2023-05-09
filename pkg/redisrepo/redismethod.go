@@ -1,43 +1,54 @@
 package redisrepo
 
 import (
-	"chatapp/model"
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/go-redis/redis/v8"
 	"log"
 	"strings"
 	"time"
+
+	"chatapp/model"
+
+	"github.com/go-redis/redis/v8"
 )
 
 func RegisterNewUser(username, password string) error {
-	//	SET username password
-	//	register new username:password
+	// redis-cli
+	// SYNTAX: SET key value
+	// SET username password
+	// register new username:password key-value pair
 	err := redisClient.Set(context.Background(), username, password, 0).Err()
 	if err != nil {
-		log.Print("Error while adding new user", err)
+		log.Println("error while adding new user", err)
 		return err
 	}
 
-	//	redis-cli
-	//SYNTAX: SADD key value
-	//SADD users username
-
+	// redis-cli
+	// SYNTAX: SADD key value
+	// SADD users username
 	err = redisClient.SAdd(context.Background(), userSetKey(), username).Err()
 	if err != nil {
-		log.Println("Error while adding user in set", err)
-		//	redis-cli
-		//SYNTAX: DEL key
-		//DEL username
-		//drop the registered user
-		redisClient.Del(context.Background().username)
+		log.Println("error while adding user in set", err)
+		// redis-cli
+		// SYNTAX: DEL key
+		// DEL username
+		// drop the registered user
+		redisClient.Del(context.Background(), username)
+
 		return err
 	}
+
 	return nil
 }
 
-// Check password with EqualFold
+func IsUserExist(username string) bool {
+	// redis-cli
+	// SYNTAX: SISMEMBER key value
+	// SISMEMBER users username
+	return redisClient.SIsMember(context.Background(), userSetKey(), username).Val()
+}
+
 func IsUserAuthentic(username, password string) error {
 	// redis-cli
 	// SYNTAX: GET key
