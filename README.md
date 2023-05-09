@@ -25,7 +25,7 @@ _Project for study proposes._
 ## Roadmap 📍
 
 - [x] Start ( _hehe_ )
-- [ ] Config Redis
+- [x] Config Redis
 - [ ] Create users
 - [ ] Send list
 - [ ] Send message
