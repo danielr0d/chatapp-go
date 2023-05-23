@@ -1,6 +1,6 @@
 <h1 align="center"> ChatApp 💬 </h1> <br>
 <p align="center">
-   <img alt="ChatApp" title="ChatApp" src="https://i.ibb.co/xmHjvtX/Icon-1024.png" width="300">
+   <img alt="ChatApp" title="ChatApp" src="https://media.tenor.com/jZiXlPPns5oAAAAC/anime-girl.gif" width="300">
 </p>
 
 <p align="center">
