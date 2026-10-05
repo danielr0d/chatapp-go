@@ -122,8 +122,10 @@ func CreateChat(c *model.Chat) (string, error) {
 	return chatKey, nil
 }
 
+// CreateFetchChatBetweenIndex creates the RediSearch index used by FetchChatBetween.
+// It is safe to call on every startup: an already existing index is not an error.
 func CreateFetchChatBetweenIndex() {
-	res, err := redisClient.Do(context.Background(),
+	_, err := redisClient.Do(context.Background(),
 		"FT.CREATE",
 		chatIndex(),
 		"ON", "JSON",
@@ -133,7 +135,9 @@ func CreateFetchChatBetweenIndex() {
 		"$.timestamp", "AS", "timestamp", "NUMERIC", "SORTABLE",
 	).Result()
 
-	fmt.Println(res, err)
+	if err != nil && !strings.Contains(err.Error(), "Index already exists") {
+		log.Fatal("error while creating chat index (is this Redis Stack?) ", err)
+	}
 }
 
 func FetchChatBetween(username1, username2, fromTS, toTS string) ([]model.Chat, error) {
