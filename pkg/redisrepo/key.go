@@ -9,6 +9,10 @@ func userSetKey() string {
 	return "users"
 }
 
+func userKey(username string) string {
+	return "user#" + username
+}
+
 func sessionKey(client string) string {
 	return "session#" + client
 }

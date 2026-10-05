@@ -11,14 +11,21 @@ import (
 	"chatapp/model"
 
 	"github.com/go-redis/redis/v8"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func RegisterNewUser(username, password string) error {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Println("error while hashing password", err)
+		return err
+	}
+
 	// redis-cli
 	// SYNTAX: SET key value
-	// SET username password
+	// SET user#username password_hash
 	// register new username:password key-value pair
-	err := redisClient.Set(context.Background(), username, password, 0).Err()
+	err = redisClient.Set(context.Background(), userKey(username), hash, 0).Err()
 	if err != nil {
 		log.Println("error while adding new user", err)
 		return err
@@ -32,9 +39,9 @@ func RegisterNewUser(username, password string) error {
 		log.Println("error while adding user in set", err)
 		// redis-cli
 		// SYNTAX: DEL key
-		// DEL username
+		// DEL user#username
 		// drop the registered user
-		redisClient.Del(context.Background(), username)
+		redisClient.Del(context.Background(), userKey(username))
 
 		return err
 	}
@@ -52,10 +59,10 @@ func IsUserExist(username string) bool {
 func IsUserAuthentic(username, password string) error {
 	// redis-cli
 	// SYNTAX: GET key
-	// GET username
-	p := redisClient.Get(context.Background(), username).Val()
+	// GET user#username
+	hash := redisClient.Get(context.Background(), userKey(username)).Val()
 
-	if !strings.EqualFold(p, password) {
+	if bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)) != nil {
 		return fmt.Errorf("invalid username or password")
 	}
 
