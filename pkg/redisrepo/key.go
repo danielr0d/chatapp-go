@@ -14,7 +14,7 @@ func sessionKey(client string) string {
 }
 
 func chatKey() string {
-	return fmt.Sprintln("chat#%d", time.Now().UnixMilli())
+	return fmt.Sprintf("chat#%d", time.Now().UnixMilli())
 }
 
 func chatIndex() string {

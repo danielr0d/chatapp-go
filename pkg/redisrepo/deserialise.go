@@ -34,7 +34,7 @@ func Deserialise(res interface{}) []Document {
 			return docs
 		}
 	default:
-		log.Print("different response type otherthan []interface{}. type: %T", res)
+		log.Printf("different response type other than []interface{}. type: %T", res)
 		return nil
 	}
 	return nil
